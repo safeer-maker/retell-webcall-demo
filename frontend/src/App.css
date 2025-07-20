@@ -1,0 +1,372 @@
+/* App.css */
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.App-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 1rem;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.App-header h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.status-indicator {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.status-indicator.healthy {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.status-indicator.warning {
+  background: rgba(255, 193, 7, 0.2);
+}
+
+.status-indicator.error {
+  background: rgba(244, 67, 54, 0.2);
+}
+
+.retry-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.App-main {
+  flex: 1;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.error-banner {
+  background: #ffebee;
+  border: 1px solid #f44336;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  color: #c62828;
+}
+
+.error-banner h3 {
+  margin: 0 0 0.5rem 0;
+  color: #d32f2f;
+}
+
+.error-banner button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.agent-selection {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.agent-selection h2 {
+  margin: 0 0 2rem 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.agent-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.agent-card:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.15);
+}
+
+.agent-card.selected {
+  border-color: #667eea;
+  background: #f3f7ff;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+}
+
+.agent-card h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.agent-details {
+  text-align: left;
+}
+
+.agent-details p {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.agent-details strong {
+  color: #333;
+}
+
+.call-controls {
+  margin-top: 2rem;
+}
+
+.start-call-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.start-call-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.start-call-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.no-agents {
+  padding: 3rem;
+  color: #666;
+}
+
+.no-agents h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.call-interface {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.call-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.call-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.call-info {
+  text-align: left;
+  flex: 1;
+  margin: 0 1rem;
+}
+
+.call-info p {
+  margin: 0.25rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.end-call-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.end-call-btn:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+}
+
+.call-container {
+  margin: 2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.call-iframe {
+  display: block;
+  border: none;
+  border-radius: 12px;
+}
+
+.call-instructions {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.call-instructions h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.call-instructions ul {
+  text-align: left;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.call-instructions li {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+.App-footer {
+  background: #333;
+  color: white;
+  padding: 2rem 1rem;
+  margin-top: auto;
+}
+
+.App-footer p {
+  margin: 0.5rem 0;
+}
+
+.App-footer a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.App-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .App-main {
+    padding: 1rem;
+  }
+  
+  .agent-selection,
+  .call-interface {
+    padding: 1rem;
+  }
+  
+  .agents-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .call-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .call-info {
+    text-align: center;
+    margin: 1rem 0;
+  }
+  
+  .call-iframe {
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .App-header {
+    padding: 1rem;
+  }
+  
+  .App-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .status-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .agent-card {
+    padding: 1rem;
+  }
+  
+  .start-call-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .call-iframe {
+    height: 350px;
+  }
+}
