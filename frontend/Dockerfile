@@ -1,21 +1,30 @@
-FROM node:18-alpine
+# Build stage
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including dev dependencies for build)
+RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN npm run start
 
-# Install serve to run the production build
-RUN npm install -g serve
+# Production stage
+FROM node:18-alpine AS production
+
+# Install curl for health checks and serve globally
+RUN apk add --no-cache curl && npm install -g serve
+
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder /app/build ./build
 
 # Expose port
 EXPOSE 3000

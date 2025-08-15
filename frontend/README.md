@@ -155,7 +155,7 @@ const callData = await api.createWebCall(agentId);
 
 ### Retell Web SDK Integration
 ```javascript
-import { RetellWebClient } from 'retell-client-js';
+import { RetellWebClient } from 'retell-client-js-sdk';
 
 const retellClient = new RetellWebClient();
 

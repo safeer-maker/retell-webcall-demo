@@ -26,7 +26,7 @@ def get_retell_client():
 
 @router.post("/create-web-call", response_model=WebCallResponse)
 async def create_web_call(
-    request: CreateWebCallRequest, 
+    request: CreateWebCallRequest,
     retell_client: Retell = Depends(get_retell_client)
 ):
     """
@@ -42,9 +42,15 @@ async def create_web_call(
         logger.info(f"Creating web call for agent: {request.agent_id}")
         
         # Create the web call using Retell SDK
-        web_call = retell_client.call.create_web_call(
-            agent_id=request.agent_id,
-            metadata=request.metadata
+        # Offload potentially blocking SDK call to thread pool
+        import asyncio
+        loop = asyncio.get_running_loop()
+        web_call = await loop.run_in_executor(
+            None,
+            lambda: retell_client.call.create_web_call(
+                agent_id=request.agent_id,
+                metadata=request.metadata
+            )
         )
         
         logger.info(f"Web call created successfully: {web_call.call_id}")

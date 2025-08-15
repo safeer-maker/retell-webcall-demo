@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from retell import Retell
 from config import settings
 import logging
+import asyncio
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 
@@ -16,81 +17,56 @@ def get_retell_client():
 
 @router.get("/")
 async def list_agents(retell_client: Retell = Depends(get_retell_client)):
-    """
-    List all available Retell AI agents for the authenticated account.
-    
-    Returns:
-        List of agent objects with their details
-    """
+    """List all available Retell AI agents for the authenticated account."""
+    logger.info("Fetching agents from Retell API")
     try:
-        logger.info("Fetching agents from Retell API")
-        agents_response = retell_client.agent.list()
-        
-        # Extract agents from the response
-        agents = []
-        if hasattr(agents_response, 'data'):
-            agents = agents_response.data
-        elif isinstance(agents_response, list):
-            agents = agents_response
-        
-        logger.info(f"Retrieved {len(agents)} agents")
-        
-        # Format agents for frontend consumption
-        formatted_agents = []
-        for agent in agents:
-            formatted_agent = {
-                "agent_id": agent.agent_id if hasattr(agent, 'agent_id') else getattr(agent, 'id', None),
-                "agent_name": getattr(agent, 'agent_name', getattr(agent, 'name', 'Unknown')),
-                "voice_id": getattr(agent, 'voice_id', None),
-                "language": getattr(agent, 'language', 'en-US'),
-                "response_engine": getattr(agent, 'response_engine', None)
-            }
-            formatted_agents.append(formatted_agent)
-        
-        return {
-            "agents": formatted_agents,
-            "count": len(formatted_agents)
-        }
-        
+        loop = asyncio.get_running_loop()
+        agents_response = await loop.run_in_executor(None, retell_client.agent.list)
     except Exception as e:
-        logger.error(f"Error fetching agents: {str(e)}")
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Failed to fetch agents: {str(e)}"
-        )
+        logger.error(f"Error calling Retell API (list agents): {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch agents: {e}")
 
-@router.get("/{agent_id}")
-async def get_agent(agent_id: str, retell_client: Retell = Depends(get_retell_client)):
-    """
-    Get details of a specific agent by ID.
-    
-    Args:
-        agent_id: The ID of the agent to retrieve
-        
-    Returns:
-        Agent object with details
-    """
-    try:
-        logger.info(f"Fetching agent details for ID: {agent_id}")
-        agent = retell_client.agent.retrieve(agent_id)
-        
-        formatted_agent = {
-            "agent_id": agent.agent_id if hasattr(agent, 'agent_id') else getattr(agent, 'id', None),
+    # Extract raw agent list
+    if hasattr(agents_response, 'data'):
+        raw_agents = agents_response.data
+    elif isinstance(agents_response, list):
+        raw_agents = agents_response
+    else:
+        raw_agents = []
+
+    logger.info(f"Retrieved {len(raw_agents)} agents")
+
+    formatted_agents = []
+    for agent in raw_agents:
+        formatted_agents.append({
+            "agent_id": getattr(agent, 'agent_id', getattr(agent, 'id', None)),
             "agent_name": getattr(agent, 'agent_name', getattr(agent, 'name', 'Unknown')),
             "voice_id": getattr(agent, 'voice_id', None),
             "language": getattr(agent, 'language', 'en-US'),
-            "response_engine": getattr(agent, 'response_engine', None),
-            "prompt": getattr(agent, 'prompt', None),
-            "webhook_url": getattr(agent, 'webhook_url', None)
-        }
-        
-        return formatted_agent
-        
+            "response_engine": getattr(agent, 'response_engine', None)
+        })
+
+    return {"agents": formatted_agents, "count": len(formatted_agents)}
+
+@router.get("/{agent_id}")
+async def get_agent(agent_id: str, retell_client: Retell = Depends(get_retell_client)):
+    """Get details of a specific agent by ID."""
+    logger.info(f"Fetching agent details for ID: {agent_id}")
+    try:
+        loop = asyncio.get_running_loop()
+        agent = await loop.run_in_executor(None, lambda: retell_client.agent.retrieve(agent_id))
     except Exception as e:
-        logger.error(f"Error fetching agent {agent_id}: {str(e)}")
+        logger.error(f"Error fetching agent {agent_id}: {e}")
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=f"Agent {agent_id} not found")
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Failed to fetch agent: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to fetch agent: {e}")
+
+    return {
+        "agent_id": getattr(agent, 'agent_id', getattr(agent, 'id', None)),
+        "agent_name": getattr(agent, 'agent_name', getattr(agent, 'name', 'Unknown')),
+        "voice_id": getattr(agent, 'voice_id', None),
+        "language": getattr(agent, 'language', 'en-US'),
+        "response_engine": getattr(agent, 'response_engine', None),
+        "prompt": getattr(agent, 'prompt', None),
+        "webhook_url": getattr(agent, 'webhook_url', None)
+    }

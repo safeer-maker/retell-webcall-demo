@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  minimal-backend:
+    build: ./backend
+    container_name: minimal-backend-v2
+    ports:
+      - "7000:7000"
+    restart: unless-stopped

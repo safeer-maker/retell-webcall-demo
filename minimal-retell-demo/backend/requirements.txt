@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+retell-sdk
+pydantic
+python-dotenv

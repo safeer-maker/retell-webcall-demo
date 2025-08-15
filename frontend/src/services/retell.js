@@ -1,4 +1,4 @@
-import { RetellWebClient } from 'retell-client-js';
+import { RetellWebClient } from 'retell-client-js-sdk';
 
 class RetellService {
   constructor() {
